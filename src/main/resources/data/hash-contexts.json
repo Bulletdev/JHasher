@@ -1,0 +1,176 @@
+{
+  "md5": {
+    "hashType": "MD5",
+    "commonSources": [
+      "Raw MD5 in legacy PHP apps",
+      "Linux shadow (deprecated)",
+      "WordPress older versions",
+      "Cisco IOS Type 0"
+    ],
+    "strengthRating": "VERY_WEAK",
+    "strengthNote": "No salt, no iterations, rainbow tables widely available",
+    "attackNotes": [
+      "Hashcat: ~65 GH/s on RTX 4090",
+      "Rainbow tables cover all 8-char passwords",
+      "Crackstation.net has 15B+ precomputed"
+    ]
+  },
+  "sha1": {
+    "hashType": "SHA-1",
+    "commonSources": [
+      "Git commit hashes",
+      "Legacy web apps",
+      "Oracle 11g (uppercase hex)"
+    ],
+    "strengthRating": "WEAK",
+    "strengthNote": "Fast hash, no iterations",
+    "attackNotes": [
+      "Hashcat: ~25 GH/s on RTX 4090"
+    ]
+  },
+  "sha256": {
+    "hashType": "SHA-256",
+    "commonSources": [
+      "Bitcoin addresses",
+      "Many modern web frameworks",
+      "File integrity checks"
+    ],
+    "strengthRating": "WEAK",
+    "strengthNote": "Weak when unsalted, commonly used for file integrity rather than password storage",
+    "attackNotes": [
+      "Hashcat: ~8 GH/s on RTX 4090"
+    ]
+  },
+  "sha512": {
+    "hashType": "SHA-512",
+    "commonSources": [
+      "Linux shadow ($6$) with rounds",
+      "Django default",
+      "PBKDF2 inner hash"
+    ],
+    "strengthRating": "WEAK",
+    "strengthNote": "Weak when unsalted and without iterations",
+    "attackNotes": [
+      "Hashcat: ~1.5 GH/s on RTX 4090"
+    ]
+  },
+  "bcrypt": {
+    "hashType": "bcrypt",
+    "commonSources": [
+      "Ruby on Rails (bcrypt-ruby)",
+      "Node.js bcrypt",
+      "Spring Security 5.x+",
+      "Laravel"
+    ],
+    "strengthRating": "STRONG",
+    "strengthNote": "Adaptive cost, memory-hard, GPU-resistant",
+    "attackNotes": [
+      "Hashcat: ~105 KH/s on RTX 4090 (cost 12)",
+      "Brute-force impractical above 8 chars"
+    ]
+  },
+  "ntlm": {
+    "hashType": "NTLM",
+    "commonSources": [
+      "Windows SAM database",
+      "Active Directory",
+      "Mimikatz dumps",
+      "Responder captures"
+    ],
+    "strengthRating": "VERY_WEAK",
+    "strengthNote": "Single MD4 iteration, no salt",
+    "attackNotes": [
+      "Hashcat: ~100 GH/s on RTX 4090",
+      "Pass-the-hash possible without cracking"
+    ]
+  },
+  "mysql5": {
+    "hashType": "MySQL 5.x",
+    "commonSources": [
+      "MySQL 5.x+ (mysql.user table)",
+      "MariaDB"
+    ],
+    "strengthRating": "WEAK",
+    "strengthNote": "Double SHA-1, no salt",
+    "attackNotes": [
+      "Hashcat: ~12 GH/s on RTX 4090"
+    ]
+  },
+  "postgresql_md5": {
+    "hashType": "PostgreSQL MD5",
+    "commonSources": [
+      "PostgreSQL (pg_shadow)",
+      "Amazon RDS PostgreSQL"
+    ],
+    "strengthRating": "WEAK",
+    "strengthNote": "MD5 with username as salt",
+    "attackNotes": []
+  },
+  "wordpress": {
+    "hashType": "WordPress (phpass)",
+    "commonSources": [
+      "WordPress (wp_users table)",
+      "phpBB",
+      "Joomla older versions"
+    ],
+    "strengthRating": "MODERATE",
+    "strengthNote": "phpass with 8192 iterations of MD5",
+    "attackNotes": []
+  },
+  "linux_sha512crypt": {
+    "hashType": "Linux SHA-512 crypt",
+    "commonSources": [
+      "Modern Linux /etc/shadow",
+      "Ubuntu/Debian/RHEL default"
+    ],
+    "strengthRating": "STRONG",
+    "strengthNote": "5000 rounds default, configurable",
+    "attackNotes": [
+      "Hashcat: ~200 KH/s on RTX 4090 (5000 rounds)"
+    ]
+  },
+  "linux_md5crypt": {
+    "hashType": "Linux MD5 crypt",
+    "commonSources": [
+      "Legacy Linux /etc/shadow",
+      "FreeBSD",
+      "Cisco IOS Type 5"
+    ],
+    "strengthRating": "WEAK",
+    "strengthNote": "Only 1000 MD5 iterations",
+    "attackNotes": []
+  },
+  "django_sha256": {
+    "hashType": "Django PBKDF2-SHA256",
+    "commonSources": [
+      "Django (auth_user table)",
+      "Wagtail CMS"
+    ],
+    "strengthRating": "STRONG",
+    "strengthNote": "PBKDF2 with 870000 iterations (Django 5.x)",
+    "attackNotes": []
+  },
+  "mssql2005": {
+    "hashType": "MSSQL 2005",
+    "commonSources": [
+      "SQL Server 2005-2008R2 (sys.sql_logins)",
+      "Azure SQL older instances"
+    ],
+    "strengthRating": "WEAK",
+    "strengthNote": "SHA-1 with salt, single iteration",
+    "attackNotes": []
+  },
+  "argon2": {
+    "hashType": "Argon2",
+    "commonSources": [
+      "Modern password storage best practice",
+      "PHP password_hash()",
+      "Bitwarden"
+    ],
+    "strengthRating": "VERY_STRONG",
+    "strengthNote": "Memory-hard, GPU-resistant, PHC winner",
+    "attackNotes": [
+      "Hashcat: very slow, impractical for strong passwords"
+    ]
+  }
+}

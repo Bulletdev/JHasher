@@ -1,0 +1,12 @@
+version: 2
+
+secret:
+  ignored-paths:
+    - "src/test/**"
+    - "src/main/resources/data/weak-jwt-secrets.json"
+    - "src/main/resources/data/top-passwords.json"
+
+  ignored-matches:
+    # jwt.io example token - public, not a real secret
+    - match: "SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+      name: "jwt.io example token signature"
