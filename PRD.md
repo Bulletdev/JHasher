@@ -362,7 +362,7 @@ Gerar hashes de qualquer input usando todos os algoritmos suportados.
 +-------------------------------------------------------------------+
 | TOKEN INPUT                                                        |
 | +---------------------------------------------------------------+ |
-| | eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3O...| |
+| | <paste-jwt-token-here>                                         | |
 | +---------------------------------------------------------------+ |
 |                                                                     |
 | HEADER (ALGO: HS256)     | PAYLOAD              | SIGNATURE        |

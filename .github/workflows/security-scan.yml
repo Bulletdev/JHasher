@@ -53,6 +53,7 @@ jobs:
             --exclude 'gradle/' \
             --exclude 'src/test/' \
             --exclude 'src/main/resources/data/' \
+            --exclude '*.md' \
             || true
 
       - name: Parse Results
