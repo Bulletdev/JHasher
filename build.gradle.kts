@@ -28,6 +28,9 @@ dependencies {
     implementation("com.nimbusds:nimbus-jose-jwt:10.3")
     implementation("com.google.code.gson:gson:2.13.1")
     implementation("org.fusesource.jansi:jansi:2.4.1")
+    implementation("com.formdev:flatlaf:3.5.4")
+    implementation("com.fifesoft:rsyntaxtextarea:3.5.3")
+    implementation("com.googlecode.lanterna:lanterna:3.1.2")
     testImplementation("org.junit.jupiter:junit-jupiter:5.11.4")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
