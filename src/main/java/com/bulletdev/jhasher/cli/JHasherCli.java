@@ -39,7 +39,9 @@ public class JHasherCli implements Runnable {
         AnsiConsole.systemInstall();
         int exitCode = new CommandLine(new JHasherCli()).execute(args);
         AnsiConsole.systemUninstall();
-        System.exit(exitCode);
+        if (exitCode != 0) {
+            System.exit(exitCode);
+        }
     }
 
     @Override
@@ -56,6 +58,7 @@ public class JHasherCli implements Runnable {
             }
             return;
         }
-        CommandLine.usage(this, System.out);
+        // No subcommand and no --gui/--tui: launch GUI by default
+        JHasherGui.launch();
     }
 }
