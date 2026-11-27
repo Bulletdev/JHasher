@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+# JHasher launcher - finds and runs the shadow JAR
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
+
+JAR="$PROJECT_DIR/build/libs/jhasher-2.0.0-SNAPSHOT-all.jar"
+
+if [ ! -f "$JAR" ]; then
+    JAR=$(find "$PROJECT_DIR/build/libs" -name 'jhasher-*-all.jar' -print -quit 2>/dev/null || true)
+fi
+
+if [ -z "$JAR" ] || [ ! -f "$JAR" ]; then
+    echo "JHasher JAR not found. Run: ./gradlew shadowJar" >&2
+    exit 1
+fi
+
+exec java -jar "$JAR" "$@"

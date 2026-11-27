@@ -45,12 +45,34 @@ jobs:
       - name: Run tests
         run: ./gradlew test --no-daemon
 
+      - name: Install dpkg (Linux)
+        if: matrix.target == 'linux'
+        run: sudo apt-get update && sudo apt-get install -y fakeroot
+
+      - name: Build .deb (Linux)
+        if: matrix.target == 'linux'
+        run: ./gradlew jpackageDeb --no-daemon
+
+      - name: Build .msi (Windows)
+        if: matrix.target == 'windows'
+        run: ./gradlew jpackageMsi --no-daemon
+
+      - name: Build .dmg (macOS)
+        if: matrix.target == 'macos'
+        run: ./gradlew jpackageDmg --no-daemon
+
       - name: Upload JAR
         if: matrix.target == 'linux'
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         with:
           name: jhasher-jar
           path: build/libs/*-all.jar
+
+      - name: Upload native package
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
+        with:
+          name: ${{ matrix.artifact }}
+          path: build/dist/*
 
   release:
     name: Create GitHub Release
@@ -68,3 +90,6 @@ jobs:
           generate_release_notes: true
           files: |
             release-assets/jhasher-jar/*.jar
+            release-assets/jhasher-linux/*
+            release-assets/jhasher-windows/*
+            release-assets/jhasher-macos/*
