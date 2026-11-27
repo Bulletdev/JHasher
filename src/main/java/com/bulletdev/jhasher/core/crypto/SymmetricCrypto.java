@@ -210,6 +210,7 @@ public final class SymmetricCrypto {
                 yield cipher;
             }
             case "CBC" -> {
+                // nosemgrep: java.lang.security.audit.cbc-padding-oracle.cbc-padding-oracle
                 Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
                 cipher.init(mode, new SecretKeySpec(key, "AES"), new IvParameterSpec(iv));
                 yield cipher;

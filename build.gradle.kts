@@ -51,3 +51,49 @@ tasks.shadowJar {
         attributes("Main-Class" to "com.bulletdev.jhasher.cli.JHasherCli")
     }
 }
+
+// jpackage - native installers (.deb, .rpm, .msi, .dmg)
+// Usage: ./gradlew jpackageDeb   (Linux .deb)
+//        ./gradlew jpackageRpm   (Linux .rpm)
+//        ./gradlew jpackageMsi   (Windows)
+//        ./gradlew jpackageDmg   (macOS)
+
+fun jpackageTask(name: String, type: String, extraArgs: List<String> = emptyList()) =
+    tasks.register<Exec>(name) {
+        dependsOn(tasks.shadowJar)
+        group = "distribution"
+        description = "Build .$type installer via jpackage"
+        val jarName = "jhasher-${project.version}-all.jar"
+        val args = mutableListOf(
+            "jpackage",
+            "--type", type,
+            "--name", "JHasher",
+            "--app-version", project.version.toString().removeSuffix("-SNAPSHOT"),
+            "--input", "build/libs",
+            "--main-jar", jarName,
+            "--main-class", "com.bulletdev.jhasher.cli.JHasherCli",
+            "--dest", "build/dist",
+            "--description", "Hash & Crypto Swiss Army Knife",
+        )
+        args.addAll(extraArgs)
+        commandLine(args)
+    }
+
+jpackageTask("jpackageDeb", "deb", listOf(
+    "--linux-deb-maintainer", "noreply@bulletdev.com",
+    "--linux-app-category", "utils",
+    "--linux-shortcut",
+))
+
+jpackageTask("jpackageRpm", "rpm", listOf(
+    "--linux-app-category", "utils",
+    "--linux-shortcut",
+))
+
+jpackageTask("jpackageMsi", "msi", listOf(
+    "--win-menu",
+    "--win-shortcut",
+    "--win-dir-chooser",
+))
+
+jpackageTask("jpackageDmg", "dmg")
