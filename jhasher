@@ -1,0 +1,73 @@
+#!/bin/bash
+DIR="$(dirname "$(realpath "$0")")"
+SELF="$(realpath "$0")"
+
+# Resolve version from build.gradle.kts so the launcher never goes stale
+VERSION=$(sed -n 's/^version *= *"\([^"]*\)".*/\1/p' "$DIR/build.gradle.kts" 2>/dev/null)
+JAR="$DIR/build/libs/jhasher-${VERSION}-all.jar"
+
+# Auto-build: rebuild JAR if missing or source is newer
+NEEDS_BUILD=false
+if [ -z "$VERSION" ] || [ ! -f "$JAR" ]; then
+    NEEDS_BUILD=true
+elif [ -n "$(find "$DIR/src" -newer "$JAR" \( -name '*.java' -o -name '*.properties' -o -name '*.xml' -o -name '*.yaml' -o -name '*.yml' -o -name '*.json' \) -print -quit 2>/dev/null)" ]; then
+    NEEDS_BUILD=true
+elif [ -n "$(find "$DIR" -maxdepth 1 -newer "$JAR" -type f \( -name '*.gradle' -o -name '*.gradle.kts' -o -name 'gradle.properties' \) -print -quit 2>/dev/null)" ]; then
+    NEEDS_BUILD=true
+fi
+
+if [ "$NEEDS_BUILD" = true ]; then
+    printf "JHasher: building v${VERSION:-?} "
+    (cd "$DIR" && ./gradlew shadowJar --quiet --console=plain) &
+    BUILD_PID=$!
+    SPIN='|/-\'
+    i=0
+    while kill -0 "$BUILD_PID" 2>/dev/null; do
+        printf "\rJHasher: building v${VERSION:-?} [${SPIN:i++%4:1}]"
+        sleep 0.15
+    done
+    wait "$BUILD_PID"
+    BUILD_RC=$?
+    printf "\r\033[K"
+    if [ $BUILD_RC -ne 0 ]; then
+        echo "JHasher: build failed"; exit 1
+    fi
+    echo "JHasher: v${VERSION} built"
+    touch "$JAR" 2>/dev/null
+    for old in "$DIR"/build/libs/jhasher-*-all.jar; do
+        [ "$old" != "$JAR" ] && rm -f "$old"
+    done
+fi
+
+if [ ! -f "$JAR" ]; then
+    echo "JHasher: JAR not found after build (v${VERSION:-?})"
+    exit 1
+fi
+
+# TUI mode: resize terminal if needed
+TUI_MODE=false
+for arg in "$@"; do
+    [ "$arg" = "--tui" ] && TUI_MODE=true
+done
+
+if [ "$TUI_MODE" = true ]; then
+    if [ -z "$_JHASHER_READY" ]; then
+        if command -v kitty &>/dev/null; then
+            export _JHASHER_READY=1
+            exec kitty \
+                --override initial_window_width=180c \
+                --override initial_window_height=50c \
+                --title "JHasher v${VERSION}" \
+                bash "$SELF" "$@"
+        fi
+        printf '\e[8;50;180t'
+        if command -v xdotool &>/dev/null; then
+            WID=$(xdotool getactivewindow 2>/dev/null)
+            [ -n "$WID" ] && xdotool windowsize "$WID" 1600 1000 2>/dev/null
+        fi
+        sleep 0.4
+        stty rows 50 cols 180 2>/dev/null
+    fi
+fi
+
+exec java -jar "$JAR" "$@"
